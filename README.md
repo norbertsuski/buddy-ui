@@ -9,6 +9,17 @@ Pairs with [buddy-core](https://github.com/norbertsuski/buddy-core), which owns
 the Rust side. This package knows nothing about which agent produced a session —
 it renders `SessionSnapshot` values and leaves their origin to the app.
 
+## Styling
+
+Import the stylesheet once, in the app's entry point:
+
+```ts
+import '@buddy/ui/styles.css'
+```
+
+Without it the row renders unstyled — the components carry no inline colours
+by design.
+
 ## Theming
 
 Every component takes its colours from CSS custom properties and carries no
