@@ -707,3 +707,12 @@ body {
     transition: none;
   }
 }
+
+/* The count that stands in for the tasks past the limit. Dimmer than a real
+   row and without the three-column grid, so it reads as a summary rather than
+   as another task you could look at. */
+.popover-tasks-more {
+  display: block;
+  opacity: 0.55;
+  font-variant-numeric: tabular-nums;
+}

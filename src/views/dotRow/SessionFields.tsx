@@ -135,6 +135,15 @@ interface Props {
  * The `data-testid`s keep their `popover-` prefix on both surfaces: they name
  * the field rather than the surface that happens to be drawing it.
  */
+/**
+ * How many tasks the field lists before summarising the rest.
+ *
+ * A session that fans out to a dozen subagents was pushing every other field
+ * off the panel, and a list that long is unreadable anyway — past the first few
+ * it is a count you want, not names.
+ */
+export const TASK_LIMIT = 5
+
 export function SessionFields({ session, detail, now, fields, usage = null }: Props) {
   const wanted = new Set(fields)
   const elapsedMs = Math.max(0, now - session.statusTimeMs)
@@ -180,7 +189,7 @@ export function SessionFields({ session, detail, now, fields, usage = null }: Pr
             <dt>tasks</dt>
             <dd className="popover-tasks-field" data-testid="popover-tasks">
               <ul className="popover-tasks">
-                {running.map((task: Task) => (
+                {running.slice(0, TASK_LIMIT).map((task: Task) => (
                   <li key={task.id}>
                     <span className="popover-task-kind">{TASK_KIND_LABEL[task.kind]}</span>
                     {/* The name is the part that can be arbitrarily long — a
@@ -193,6 +202,11 @@ export function SessionFields({ session, detail, now, fields, usage = null }: Pr
                     </span>
                   </li>
                 ))}
+                {running.length > TASK_LIMIT && (
+                  <li className="popover-tasks-more" data-testid="popover-tasks-more">
+                    {running.length - TASK_LIMIT} more…
+                  </li>
+                )}
               </ul>
             </dd>
           </>

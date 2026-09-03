@@ -194,6 +194,42 @@ describe('SessionPopover', () => {
     expect(tasks).toHaveTextContent('2m')
   })
 
+  it('shows at most five tasks, and says how many more there are', () => {
+    render(
+      <SessionPopover
+        session={{
+          ...session,
+          state: 'tasking',
+          detail: '9 tasks running',
+          tasks: Array.from({ length: 9 }, (_, i) => runningTask(`t${i}`, `task ${i}`)),
+        }}
+      />,
+    )
+    const tasks = screen.getByTestId('popover-tasks')
+    // The first five by age, and nothing past them: a session that fanned out
+    // to nine subagents would otherwise push every other field off the panel.
+    expect(tasks).toHaveTextContent('task 0')
+    expect(tasks).toHaveTextContent('task 4')
+    expect(tasks).not.toHaveTextContent('task 5')
+    expect(tasks).not.toHaveTextContent('task 8')
+    expect(screen.getByTestId('popover-tasks-more')).toHaveTextContent('4 more')
+  })
+
+  it('has no more-line when the tasks fit', () => {
+    render(
+      <SessionPopover
+        session={{
+          ...session,
+          state: 'tasking',
+          detail: '5 tasks running',
+          tasks: Array.from({ length: 5 }, (_, i) => runningTask(`t${i}`, `task ${i}`)),
+        }}
+      />,
+    )
+    expect(screen.getByTestId('popover-tasks')).toHaveTextContent('task 4')
+    expect(screen.queryByTestId('popover-tasks-more')).toBeNull()
+  })
+
   it('names a task with no label by its id', () => {
     render(
       <SessionPopover
